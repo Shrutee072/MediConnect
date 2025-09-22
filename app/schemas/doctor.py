@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -43,6 +43,10 @@ class DoctorResponse(DoctorBase):
     # Related data
     speciality_name: Optional[str] = None
     sub_speciality_name: Optional[str] = None
+    
+    # Profile completeness
+    completeness_percentage: int
+    completeness_tips: Optional[List[str]] = None
 
     class Config:
         from_attributes = True

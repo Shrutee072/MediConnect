@@ -6,6 +6,7 @@ from app.db import get_db
 from app.models.models import Doctor, MedicalSpeciality, MedicalSubSpeciality
 from app.schemas.doctor import DoctorResponse, DoctorUpdate
 from app.routers.auth import get_current_doctor
+from app.utils.profile import calculate_profile_completeness, get_profile_completeness_tips
 
 router = APIRouter(prefix="/doctor", tags=["Doctor Profile"])
 
@@ -34,10 +35,16 @@ async def get_doctor_profile(
         if sub_speciality:
             sub_speciality_name = sub_speciality.name
     
+    # Calculate profile completeness
+    completeness_percentage = calculate_profile_completeness(current_doctor)
+    completeness_tips = get_profile_completeness_tips(current_doctor)
+    
     # Create response with additional fields
     doctor_dict = DoctorResponse.model_validate(current_doctor).model_dump()
     doctor_dict['speciality_name'] = speciality_name
     doctor_dict['sub_speciality_name'] = sub_speciality_name
+    doctor_dict['completeness_percentage'] = completeness_percentage
+    doctor_dict['completeness_tips'] = completeness_tips if completeness_percentage < 100 else None
     
     return DoctorResponse(**doctor_dict)
 
@@ -98,5 +105,5 @@ async def update_doctor_profile(
         # Refresh the doctor object
         db.refresh(current_doctor)
     
-    # Get updated profile with speciality names
+    # Get updated profile with speciality names and completeness
     return await get_doctor_profile(current_doctor, db)
