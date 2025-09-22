@@ -1,0 +1,74 @@
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Boolean, Enum, func
+from sqlalchemy.orm import relationship
+import enum
+from app.db import Base
+
+
+class VerificationStatus(enum.Enum):
+    PENDING = "pending"
+    VERIFIED = "verified"
+    REJECTED = "rejected"
+
+
+class MedicalSpeciality(Base):
+    __tablename__ = "medical_specialities"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), unique=True, nullable=False, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # Relationships
+    sub_specialities = relationship("MedicalSubSpeciality", back_populates="speciality")
+    doctors = relationship("Doctor", back_populates="speciality")
+
+
+class MedicalSubSpeciality(Base):
+    __tablename__ = "medical_sub_specialities"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    speciality_id = Column(Integer, ForeignKey("medical_specialities.id"), nullable=False)
+    name = Column(String(100), nullable=False, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # Relationships
+    speciality = relationship("MedicalSpeciality", back_populates="sub_specialities")
+    doctors = relationship("Doctor", back_populates="sub_speciality")
+
+
+class Doctor(Base):
+    __tablename__ = "doctors"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    full_name = Column(String(200), nullable=False, index=True)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    hashed_password = Column(String(255), nullable=False)
+    clinic_name = Column(String(200))
+    clinic_address = Column(Text)
+    speciality_id = Column(Integer, ForeignKey("medical_specialities.id"))
+    sub_speciality_id = Column(Integer, ForeignKey("medical_sub_specialities.id"))
+    years_of_experience = Column(Integer)
+    medical_institute = Column(String(300))
+    awards = Column(Text)
+    medical_council_regd_no = Column(String(50), unique=True)
+    profile_photo = Column(String(500))  # URL or file path
+    is_verified = Column(Enum(VerificationStatus), default=VerificationStatus.PENDING)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # Relationships
+    speciality = relationship("MedicalSpeciality", back_populates="doctors")
+    sub_speciality = relationship("MedicalSubSpeciality", back_populates="doctors")
+
+
+class OTPVerification(Base):
+    __tablename__ = "otp_verifications"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), nullable=False, index=True)
+    otp_code = Column(String(6), nullable=False)
+    purpose = Column(String(20), nullable=False)  # registration, login, reset_password
+    is_used = Column(Boolean, default=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
