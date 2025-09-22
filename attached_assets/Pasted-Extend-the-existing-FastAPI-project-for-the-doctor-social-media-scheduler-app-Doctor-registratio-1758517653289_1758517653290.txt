@@ -1,0 +1,60 @@
+Extend the existing FastAPI project for the doctor social media scheduler app.
+
+Doctor registration and profile APIs are already implemented.  
+Now add the social account integration and post scheduling modules.
+
+1. Database Models
+   - SocialAccount:
+       id, doctor_id (FK), platform (facebook, instagram, linkedin, twitter, youtube, reddit, quora),
+       page_id/org_id (nullable),
+       access_token,
+       refresh_token (nullable),
+       token_expires_at (nullable),
+       created_at
+   - Post:
+       id, doctor_id (FK), platform,
+       content TEXT,
+       media_url VARCHAR,
+       scheduled_at TIMESTAMP,
+       status (ENUM: scheduled, published, failed),
+       error_message (nullable),
+       created_at
+
+2. Endpoints
+   - Social Accounts:
+       - GET /social/accounts → list connected accounts for logged-in doctor
+       - POST /social/connect/{platform} → generate OAuth authorization URL for that platform
+       - GET /social/callback/{platform} → handle OAuth2 callback, exchange code for token, save token in DB
+       - DELETE /social/accounts/{id} → disconnect account
+   - Posts:
+       - POST /posts → create a scheduled post (doctor chooses platform, writes content, adds optional media_url, and sets scheduled_at)
+       - GET /posts → list doctor’s posts
+       - PUT /posts/{id} → update content or schedule
+       - DELETE /posts/{id} → cancel scheduled post
+
+3. Scheduling
+   - Use APScheduler to check the Post table every minute for due posts (status = scheduled and scheduled_at <= now).
+   - When a post is due, call a publisher function based on its platform.
+   - For now, publishers are dummy functions that log:
+       "Publishing post {id} for doctor {doctor_id} on {platform}..."
+   - Update post status to "published" or "failed" (if exception occurs).
+
+4. Utilities
+   - Create a BasePublisher class in app/utils/publishers/base_publisher.py
+   - Create individual publisher files (e.g., facebook_publisher.py, linkedin_publisher.py, twitter_publisher.py) that inherit from BasePublisher.
+   - Initially, just log success; later integrate real APIs.
+
+5. Project Structure
+   - app/models/social_account.py
+   - app/models/post.py
+   - app/routers/social.py
+   - app/routers/posts.py
+   - app/utils/scheduler.py
+   - app/utils/publishers/base_publisher.py
+   - app/utils/publishers/{platform}_publisher.py
+
+6. Requirements
+   Add these to requirements.txt:
+   apscheduler
+   authlib
+   requests

@@ -6,3 +6,6 @@ alembic
 python-jose[cryptography]
 passlib[bcrypt]
 pydantic[email]
+apscheduler
+authlib
+requests

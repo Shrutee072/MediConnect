@@ -63,6 +63,8 @@ class Doctor(Base):
     # Relationships
     speciality = relationship("MedicalSpeciality", back_populates="doctors")
     sub_speciality = relationship("MedicalSubSpeciality", back_populates="doctors")
+    social_accounts = relationship("SocialAccount", back_populates="doctor")
+    posts = relationship("Post", back_populates="doctor")
 
 
 class OTPVerification(Base):
