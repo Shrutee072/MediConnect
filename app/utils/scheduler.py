@@ -1,7 +1,7 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from sqlalchemy.orm import Session
-from datetime import datetime
+from datetime import datetime, timezone
 from app.db import SessionLocal
 from app.models.post import Post, PostStatus
 from app.utils.publishers.facebook_publisher import FacebookPublisher
@@ -37,7 +37,7 @@ async def check_due_posts():
         # Get all scheduled posts that are due
         due_posts = db.query(Post).filter(
             Post.status == PostStatus.SCHEDULED,
-            Post.scheduled_at <= datetime.now()
+            Post.scheduled_at <= datetime.now(timezone.utc)
         ).all()
         
         for post in due_posts:
@@ -87,7 +87,9 @@ def start_scheduler():
             trigger=IntervalTrigger(minutes=1),
             id="check_due_posts",
             name="Check for due posts",
-            replace_existing=True
+            replace_existing=True,
+            misfire_grace_time=30,  # 30 seconds grace time for missed jobs
+            coalesce=True  # Combine multiple missed jobs into one
         )
         
         scheduler.start()

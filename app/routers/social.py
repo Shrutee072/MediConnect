@@ -113,6 +113,19 @@ async def disconnect_social_account(
             detail="Social account not found or not owned by current doctor"
         )
     
+    # Check if there are scheduled posts using this account
+    from app.models.post import Post, PostStatus
+    scheduled_posts = db.query(Post).filter(
+        Post.social_account_id == account_id,
+        Post.status == PostStatus.SCHEDULED
+    ).count()
+    
+    if scheduled_posts > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot disconnect account with {scheduled_posts} scheduled posts. Cancel posts first."
+        )
+    
     platform = account.platform
     db.delete(account)
     db.commit()

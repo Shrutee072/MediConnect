@@ -24,18 +24,30 @@ Preferred communication style: Simple, everyday language.
 ### Database Design
 - **PostgreSQL**: Primary database using psycopg2-binary driver
 - **Connection Pooling**: Configured with pool_pre_ping and pool_recycle for reliability
-- **Three main entities**:
+- **Five main entities**:
   - **Doctor**: Core user entity with profile information and medical credentials
   - **MedicalSpeciality**: Master data for medical specializations
   - **MedicalSubSpeciality**: Hierarchical sub-specializations linked to main specialities
+  - **SocialAccount**: Social media platform connections for doctors with OAuth tokens
+  - **Post**: Scheduled social media posts with content, timing, and status tracking
 
 ### API Structure
 - **Modular Router Design**: Separate routers for different functional areas
   - `/auth`: Registration, login, and OTP verification endpoints
   - `/doctor`: Doctor profile management (get/update profile)
   - `/master`: Master data endpoints for specialities and sub-specialities
+  - `/social`: Social media account connection and OAuth management
+  - `/posts`: Post scheduling, management, and CRUD operations
 - **Pydantic Schemas**: Request/response validation and serialization
 - **Dependency Injection**: Database sessions and authentication handled via FastAPI dependencies
+
+### Social Media Scheduler
+- **Platform Support**: Facebook, Instagram, LinkedIn, Twitter, YouTube, Reddit, Quora
+- **OAuth Integration**: Ready-to-implement OAuth2 flows for platform connections
+- **Post Scheduling**: Create, update, and cancel scheduled posts with timezone-aware handling
+- **Background Processing**: APScheduler runs every minute to publish due posts
+- **Publisher Pattern**: Extensible publisher classes for each platform with common interface
+- **Status Tracking**: Post status progression (scheduled → published/failed) with error logging
 
 ### Configuration Management
 - **Environment-based Settings**: Database URL, JWT secrets, and other sensitive data via environment variables

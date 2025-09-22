@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from app.routers import auth, doctor, master, social, posts
 from app.config import settings
 from app.utils.scheduler import start_scheduler, stop_scheduler
-import atexit
+import logging
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -17,11 +19,16 @@ app.include_router(master.router)
 app.include_router(social.router)
 app.include_router(posts.router)
 
-# Start the post scheduler
-start_scheduler()
+# Scheduler lifecycle management
+@app.on_event("startup")
+async def startup_event():
+    """Initialize services on app startup"""
+    start_scheduler()
 
-# Register cleanup function
-atexit.register(stop_scheduler)
+@app.on_event("shutdown") 
+async def shutdown_event():
+    """Cleanup on app shutdown"""
+    stop_scheduler()
 
 @app.get("/health")
 async def health():

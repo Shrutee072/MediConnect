@@ -16,7 +16,7 @@ class Post(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     doctor_id = Column(Integer, ForeignKey("doctors.id"), nullable=False)
-    social_account_id = Column(Integer, ForeignKey("social_accounts.id"), nullable=False)
+    social_account_id = Column(Integer, ForeignKey("social_accounts.id", ondelete="CASCADE"), nullable=False)
     platform = Column(String(50), nullable=False)
     content = Column(Text, nullable=False)
     media_url = Column(String(500), nullable=True)

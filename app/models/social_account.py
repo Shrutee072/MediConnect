@@ -18,4 +18,4 @@ class SocialAccount(Base):
     
     # Relationships
     doctor = relationship("Doctor", back_populates="social_accounts")
-    posts = relationship("Post", back_populates="social_account")
+    posts = relationship("Post", back_populates="social_account", cascade="all, delete-orphan")

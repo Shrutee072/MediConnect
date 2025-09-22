@@ -9,3 +9,5 @@ pydantic[email]
 apscheduler
 authlib
 requests
+apscheduler
+authlib

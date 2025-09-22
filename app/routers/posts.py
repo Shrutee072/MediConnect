@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 from app.db import get_db
 from app.models.models import Doctor
 from app.models.social_account import SocialAccount
@@ -34,7 +34,7 @@ async def create_scheduled_post(
         )
     
     # Check if scheduled time is in the future
-    if post_data.scheduled_at <= datetime.now():
+    if post_data.scheduled_at <= datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Scheduled time must be in the future"
@@ -99,11 +99,11 @@ async def update_post(
         )
     
     # Update fields
-    update_data = post_update.dict(exclude_unset=True)
+    update_data = post_update.model_dump(exclude_unset=True)
     
     # Validate scheduled_at if provided
     if "scheduled_at" in update_data:
-        if update_data["scheduled_at"] <= datetime.now():
+        if update_data["scheduled_at"] <= datetime.now(timezone.utc):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Scheduled time must be in the future"
