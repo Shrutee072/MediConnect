@@ -6,15 +6,18 @@ from datetime import datetime
 class DoctorBase(BaseModel):
     full_name: str
     email: EmailStr
+    phone_number: Optional[str] = None
     clinic_name: Optional[str] = None
     clinic_address: Optional[str] = None
     speciality_id: Optional[int] = None
     sub_speciality_id: Optional[int] = None
     years_of_experience: Optional[int] = None
+    qualification: Optional[str] = None
     medical_institute: Optional[str] = None
     awards: Optional[str] = None
     medical_council_regd_no: Optional[str] = None
     profile_photo: Optional[str] = None
+    professional_bio: Optional[str] = None
 
 
 class DoctorCreate(DoctorBase):
@@ -23,15 +26,18 @@ class DoctorCreate(DoctorBase):
 
 class DoctorUpdate(BaseModel):
     full_name: Optional[str] = None
+    phone_number: Optional[str] = None
     clinic_name: Optional[str] = None
     clinic_address: Optional[str] = None
     speciality_id: Optional[int] = None
     sub_speciality_id: Optional[int] = None
     years_of_experience: Optional[int] = None
+    qualification: Optional[str] = None
     medical_institute: Optional[str] = None
     awards: Optional[str] = None
     medical_council_regd_no: Optional[str] = None
     profile_photo: Optional[str] = None
+    professional_bio: Optional[str] = None
 
 
 class DoctorResponse(DoctorBase):

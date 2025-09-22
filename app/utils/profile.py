@@ -9,15 +9,18 @@ def calculate_profile_completeness(doctor: Doctor) -> int:
     """
     # Define the optional fields that contribute to profile completeness
     optional_fields = [
+        'phone_number',
         'clinic_name',
         'clinic_address', 
         'speciality_id',
         'sub_speciality_id',
         'years_of_experience',
+        'qualification',
         'medical_institute',
         'awards',
         'medical_council_regd_no',
-        'profile_photo'
+        'profile_photo',
+        'professional_bio'
     ]
     
     filled_fields = 0
@@ -48,6 +51,10 @@ def get_profile_completeness_tips(doctor: Doctor) -> list[str]:
     """
     tips = []
     
+    phone_number = getattr(doctor, 'phone_number', None)
+    if not phone_number or not str(phone_number).strip():
+        tips.append("Add your phone number for WhatsApp contact")
+    
     clinic_name = getattr(doctor, 'clinic_name', None)
     if not clinic_name or not str(clinic_name).strip():
         tips.append("Add your clinic name to help patients find you")
@@ -68,6 +75,10 @@ def get_profile_completeness_tips(doctor: Doctor) -> list[str]:
     if years_of_experience is None or years_of_experience <= 0:
         tips.append("Add your years of experience to build trust")
     
+    qualification = getattr(doctor, 'qualification', None)
+    if not qualification or not str(qualification).strip():
+        tips.append("Add your professional qualifications and degrees")
+    
     medical_institute = getattr(doctor, 'medical_institute', None)
     if not medical_institute or not str(medical_institute).strip():
         tips.append("Mention your medical institute/university")
@@ -83,5 +94,9 @@ def get_profile_completeness_tips(doctor: Doctor) -> list[str]:
     profile_photo = getattr(doctor, 'profile_photo', None)
     if not profile_photo or not str(profile_photo).strip():
         tips.append("Upload a professional profile photo")
+    
+    professional_bio = getattr(doctor, 'professional_bio', None)
+    if not professional_bio or not str(professional_bio).strip():
+        tips.append("Write a professional bio to introduce yourself")
     
     return tips

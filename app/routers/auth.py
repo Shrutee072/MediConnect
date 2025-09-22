@@ -78,15 +78,18 @@ async def register_doctor(
         full_name=doctor_data.full_name,
         email=doctor_data.email,
         hashed_password=hashed_password,
+        phone_number=doctor_data.phone_number,
         clinic_name=doctor_data.clinic_name,
         clinic_address=doctor_data.clinic_address,
         speciality_id=doctor_data.speciality_id,
         sub_speciality_id=doctor_data.sub_speciality_id,
         years_of_experience=doctor_data.years_of_experience,
+        qualification=doctor_data.qualification,
         medical_institute=doctor_data.medical_institute,
         awards=doctor_data.awards,
         medical_council_regd_no=doctor_data.medical_council_regd_no,
         profile_photo=doctor_data.profile_photo,
+        professional_bio=doctor_data.professional_bio,
         is_verified=VerificationStatus.PENDING
     )
     

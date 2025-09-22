@@ -44,15 +44,18 @@ class Doctor(Base):
     full_name = Column(String(200), nullable=False, index=True)
     email = Column(String(255), unique=True, nullable=False, index=True)
     hashed_password = Column(String(255), nullable=False)
+    phone_number = Column(String(20))  # WhatsApp contact number
     clinic_name = Column(String(200))
     clinic_address = Column(Text)
     speciality_id = Column(Integer, ForeignKey("medical_specialities.id"))
     sub_speciality_id = Column(Integer, ForeignKey("medical_sub_specialities.id"))
     years_of_experience = Column(Integer)
+    qualification = Column(String(500))  # Professional qualifications
     medical_institute = Column(String(300))
     awards = Column(Text)
     medical_council_regd_no = Column(String(50), unique=True)
     profile_photo = Column(String(500))  # URL or file path
+    professional_bio = Column(Text)  # Professional bio/description
     is_verified = Column(Enum(VerificationStatus), default=VerificationStatus.PENDING)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
