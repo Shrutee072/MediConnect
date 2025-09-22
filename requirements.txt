@@ -6,11 +6,3 @@ alembic
 python-jose[cryptography]
 passlib[bcrypt]
 pydantic[email]
-alembic
-fastapi
-passlib[bcrypt]
-psycopg2-binary
-pydantic[email]
-python-jose[cryptography]
-sqlalchemy
-uvicorn
