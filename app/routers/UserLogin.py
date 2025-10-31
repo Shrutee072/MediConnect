@@ -18,18 +18,18 @@ class GoogleAuthRequest(BaseModel):
 def verify_google_auth(
     request: GoogleAuthRequest,
     db: Session = Depends(get_db),
-    api_key: str = Header(None, alias="APIKEY"),
+    # api_key: str = Header(None, alias="APIKEY"),
 ):
     """
     ✅ Verify Google Authentication (with JWT + Refresh token)
     Request body: { "email": "contact.digidr@gmail.com" }
     """
 
-    if api_key != settings.STATIC_API_KEY:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid API Key"
-        )
+    # if api_key != settings.STATIC_API_KEY:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Invalid API Key"
+    #     )
 
     email = request.email
     if not email:
