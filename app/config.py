@@ -4,7 +4,9 @@ from typing import Optional
 class Settings:
     # Database settings
     DATABASE_URL: Optional[str] = os.environ.get("DATABASE_URL")
-    
+    STATIC_API_KEY: Optional[str] = os.environ.get("STATIC_API_KEY")
+    SECRET_KEY: Optional[str] = os.environ.get("SECRET_KEY")
+
     # JWT settings
     SECRET_KEY: str = os.environ.get("SESSION_SECRET")
     if not SECRET_KEY:
@@ -22,3 +24,4 @@ class Settings:
     DEBUG: bool = os.environ.get("DEBUG", "false").lower() == "true"
 
 settings = Settings()
+

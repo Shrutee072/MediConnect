@@ -43,7 +43,7 @@ class Doctor(Base):
     id = Column(Integer, primary_key=True, index=True)
     full_name = Column(String(200), nullable=False, index=True)
     email = Column(String(255), unique=True, nullable=False, index=True)
-    hashed_password = Column(String(255), nullable=False)
+    hashed_password = Column(String(255), nullable=True)
     phone_number = Column(String(20))  # WhatsApp contact number
     clinic_name = Column(String(200))
     clinic_address = Column(Text)
@@ -77,3 +77,33 @@ class OTPVerification(Base):
     is_used = Column(Boolean, default=False)
     expires_at = Column(DateTime(timezone=True), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+
+    
+
+
+
+# class PostStatus(enum.Enum):
+#     DRAFT = "DRAFT"
+#     SCHEDULED = "SCHEDULED"
+#     POSTED = "POSTED"
+#     FAILED = "FAILED"
+
+
+# class Post(Base):
+#     __tablename__ = "posts"
+
+#     id = Column(Integer, primary_key=True, index=True)
+#     doctor_id = Column(Integer, ForeignKey("doctors.id"), nullable=False)
+#     social_account_id = Column(Integer, ForeignKey("social_accounts.id"), nullable=True)
+#     platform = Column(String(50), nullable=False)
+#     content = Column(Text, nullable=True)
+#     media_url = Column(String(500), nullable=True)
+#     scheduled_at = Column(DateTime(timezone=True), nullable=True)
+#     status = Column(Enum(PostStatus), default=PostStatus.DRAFT)
+#     error_message = Column(Text, nullable=True)
+#     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+#     # Relationships
+#     doctor = relationship("Doctor", back_populates="posts")
