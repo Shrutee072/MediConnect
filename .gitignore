@@ -1,0 +1,22 @@
+# Byte-compiled and cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+fastapienv/
+
+# Environment variables
+.env
+*.env
+
+# Editor settings
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
