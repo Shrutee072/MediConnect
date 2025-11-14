@@ -48,3 +48,12 @@ class SubSpecialitiesListResponse(BaseModel):
     sub_specialities: List[MedicalSubSpecialityResponse]
     total: int
     speciality_id: Optional[int] = None
+
+
+
+class CreateSpeciality(BaseModel):
+    name: str
+
+class CreateSubSpeciality(BaseModel):
+    name: str
+    speciality_id: int

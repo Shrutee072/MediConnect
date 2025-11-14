@@ -1,12 +1,15 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query,HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
-
+from app.routers.auth import get_current_doctor
 from app.db import get_db
-from app.models.models import MedicalSpeciality, MedicalSubSpeciality
+from typing import Annotated
+from app.models.models import MedicalSpeciality, MedicalSubSpeciality,Doctor
 from app.schemas.master import (
     SpecialitiesListResponse, SubSpecialitiesListResponse,
-    MedicalSpecialityResponse, MedicalSubSpecialityResponse
+    MedicalSpecialityResponse, MedicalSubSpecialityResponse,
+    CreateSpeciality, CreateSubSpeciality
+
 )
 
 router = APIRouter(prefix="/master", tags=["Master Data"])
@@ -65,3 +68,46 @@ async def get_sub_specialities(
         total=total,
         speciality_id=speciality_id
     )
+
+
+
+@router.post("/speciality", response_model=MedicalSpecialityResponse)
+async def create_speciality(
+    data: CreateSpeciality,
+    db: Session = Depends(get_db),
+    current_doctor: Doctor = Depends(get_current_doctor),
+):
+    speciality = MedicalSpeciality(name=data.name)
+    db.add(speciality)
+    db.commit()
+    db.refresh(speciality)
+    return MedicalSpecialityResponse.model_validate(speciality)
+
+
+
+
+
+
+@router.post("/sub-speciality", response_model=MedicalSubSpecialityResponse)
+async def create_sub_speciality(
+    data: CreateSubSpeciality,
+    db: Session = Depends(get_db),
+    current_doctor: Doctor = Depends(get_current_doctor)
+):
+    # Validate parent speciality exists
+    parent = db.query(MedicalSpeciality).filter(
+        MedicalSpeciality.id == data.speciality_id
+    ).first()
+    if not parent:
+        raise HTTPException(status_code=400, detail="Invalid speciality_id")
+
+    sub = MedicalSubSpeciality(
+        name=data.name,
+        speciality_id=data.speciality_id
+    )
+    db.add(sub)
+    db.commit()
+    db.refresh(sub)
+
+    return MedicalSubSpecialityResponse.model_validate(sub)
+

@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import Annotated
-
 from app.db import get_db
 from app.models.models import Doctor, MedicalSpeciality, MedicalSubSpeciality
 from app.schemas.doctor import DoctorResponse, DoctorUpdate
